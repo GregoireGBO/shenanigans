@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 Console.WriteLine("Hello, World!");
 
-test_foreach_with_select_and_records(10);
+test_foreach_with_select_and_records(15);
 
-test_exception_time(10);
+//test_exception_time(15);
 
 Console.WriteLine("END");
 Console.ReadLine();
@@ -30,7 +30,8 @@ void forEachInForEachWithRecordAlloc(int someInt)
 {
     var list1 = Enumerable.Range(0, 1000).Select(i => new MyInt(i));
     var list2 = Enumerable.Range(0, 1000).Select(i => new MyInt(i));
-    var listIntermediary = new List<My2Ints>();
+
+    var listIntermediary = new List<int>();
     var listRes = new List<MyInt>();
     var sw = Stopwatch.StartNew();
 
@@ -38,13 +39,13 @@ void forEachInForEachWithRecordAlloc(int someInt)
     {
         foreach (var i2 in list2)
         {
-            listIntermediary.Add(new My2Ints(i, i2));
-            //listIntermediary.Add(new My2Ints(i with { v = i.v + 1 }, i2 with { v = i2.v + 1 }));
+            listIntermediary.Add(i.v + i2.v);
         }
     }
+
     var ellapsedBeforeSelect = sw.ElapsedMilliseconds;
 
-    listRes = listIntermediary.Select(r => new MyInt(r.v1.v + r.v2.v + someInt)).ToList();
+    listRes = listIntermediary.Select(r => new MyInt(r)).ToList();
 
     var ellapsedMs = sw.ElapsedMilliseconds;
 
@@ -53,7 +54,7 @@ void forEachInForEachWithRecordAlloc(int someInt)
 
 void forEachException()
 {
-    int nbIter = 10;
+    int nbIter = 100;
     var sw = Stopwatch.StartNew();
 
     for (int i = 0; i < nbIter; i++)
@@ -71,4 +72,3 @@ void forEachException()
 }
 
 public record MyInt(int v);
-public record My2Ints(MyInt v1, MyInt v2);
